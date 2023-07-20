@@ -26,6 +26,7 @@ where
 	student_age = 21;
 
 # 나이가 20살인 학생들의 점수를 전부 더하세요.
+# select 순서(group by 예시) : from > where > group by > select > having
 select 
 	student_age,
 	sum(student_score) as total_score
@@ -33,7 +34,29 @@ from
     student_tb
 -- where # group by 전 조건식
 -- 	student_age = 20
-group by
-	student_age # age끼리로 묶고 나머지(score)는 더해라
+group by # age끼리로 묶고 나머지(score)는 더해라
+	student_age 
 having # group by 후 조건식
 	total_score = 40; 
+
+# select 순서(count 예시) : from > where > select
+select
+	count(*)
+from
+	student_tb
+where
+	student_age = 20;
+
+# select 순서(order by  예시) : from > select > order by
+select
+	*
+from
+	student_tb
+order by # 성적순(정렬) / asc = 오름차순(일반적으로 오름차순으로 생략가능), desc = 내림차순
+	student_score desc,
+	student_id desc;
+
+    
+    
+    
+    
