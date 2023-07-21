@@ -1,4 +1,4 @@
-/*
+   /*
 	1. 검색창에 상구라고 검색했을 때 해당 user에 등록된 모든 주소를 조회하시오.
     2. 상품별 총 판매 수량, 판매 총액을 조회하시오.
     3. 카테고리별 등록된 상품이 몇개씩 등록되어 있는지 조회하시오.
@@ -17,22 +17,24 @@ where
 # 2. 상품별 총 판매 수량, 판매 총액을 조회하시오.
 select
 	odt.product_id,
+    pt.product_name,
     sum(odt.count_number) as total_product_count,
-    sum(pt.product_price) as total_product_price
+    sum(pt.product_price * odt.count_number) as total_product_price
 from
 	order_detail_tb odt
 	left outer join product_tb pt on(pt.product_id = odt.product_id)
 group by
-	odt.product_id;
+	odt.product_id,
+    pt.product_name;
 
 # 3. 카테고리별 등록된 상품이 몇개씩 등록되어 있는지 조회하시오.
 select
 	pt.category_id,
     ct.category_name,
-    count(product_id) as total_product_count
+    count(pt.product_id) as total_product_count
 from
-	product_tb pt
-    left outer join category_tb ct on(ct.category_id = pt.category_id)
+	category_tb ct
+    left outer join product_tb pt on(pt.category_id = ct.category_id)
 group by
 	pt.category_id,
     ct.category_name;
