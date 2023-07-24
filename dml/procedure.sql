@@ -14,7 +14,7 @@ call get_product_by_category(''); #if(범위)
 
 call get_product_by_category_case('tees');#case(같은값)
 
-set global log_bin_trust_function_creators = 1; # function
+set global log_bin_trust_function_creators = 1; # function #오류
 show global variables like 'log_bin_trust_function_creators';
 
 select create_name_and_age('김준일', 30);
