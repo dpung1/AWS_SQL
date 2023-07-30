@@ -82,7 +82,7 @@ CREATE TABLE `product_tb` (
   `product_category_id` int NOT NULL,
   PRIMARY KEY (`product_id`),
   UNIQUE KEY `product_name_UNIQUE` (`product_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -91,7 +91,7 @@ CREATE TABLE `product_tb` (
 
 LOCK TABLES `product_tb` WRITE;
 /*!40000 ALTER TABLE `product_tb` DISABLE KEYS */;
-INSERT INTO `product_tb` VALUES (3,'반팔티',30000,1,1),(4,'조거팬츠',35000,1,2),(5,'슬리퍼',15000,1,3);
+INSERT INTO `product_tb` VALUES (3,'반팔티',25000,3,1),(4,'조거팬츠',35000,1,2),(5,'슬리퍼',15000,1,3),(22,'목티',300000,3,1),(23,'샌들',350000,2,3);
 /*!40000 ALTER TABLE `product_tb` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -148,6 +148,65 @@ BEGIN
 	end if;
         
     
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `p_select_product` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `p_select_product`(
+
+	in vs_searchOption varchar(50),
+    in vs_searchValue  varchar(250)
+)
+BEGIN
+
+	select
+		pt.product_id,
+		pt.product_name,
+		pt.product_price,
+		
+		pt.product_color_id,
+		pcot.product_color_name,
+		
+		pt.product_category_id,
+		pcat.product_category_name
+	from
+		product_tb pt
+        left outer join product_color_tb pcot
+			on (pcot.product_color_id = pt.product_color_id)
+		left outer join product_category_tb pcat
+			on (pcat.product_category_id = pt.product_category_id)
+	where (
+			vs_searchOption = '전체'
+			and (
+				pt.product_name like concat('%', vs_searchValue, '%')
+                or pcot.product_color_name like concat('%', vs_searchValue, '%')
+                or pcat.product_category_name like concat('%', vs_searchValue, '%')
+                )
+        )
+        or (
+			vs_searchOption = '상품명'
+            and pt.product_name like concat('%', vs_searchValue, '%')
+		)
+		or (
+			vs_searchOption = '색상'
+            and pcot.product_color_name like concat('%', vs_searchValue, '%')
+		)
+		or (
+			vs_searchOption = '카테고리'
+            and pcat.product_category_name like concat('%', vs_searchValue, '%')
+		);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -218,4 +277,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-28 18:00:08
+-- Dump completed on 2023-07-30 17:45:29
